@@ -1,0 +1,90 @@
+﻿<!doctype html>
+<html class="no-js">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+
+<body>
+    <div class="container" ng-view></div>
+
+    <script src="scripts/bower_components/requirejs/require.js"></script>
+    <script src="scripts/config.js"></script>
+    <script>
+        /**
+         * Global constants
+         * TODO: ideally all of these values would be filled in from the server side
+         */
+        window.SETTINGS = {};
+
+        /**
+         * Indicates whether we are running on a production environment
+         *
+         * @constant
+         * @type {bool}
+         */
+        SETTINGS.IS_PRODUCTION = false;
+
+        /**
+         * Set to true to allow application to output to browser console, false to silence all console output
+         * This should be set to `false` on production.
+         *
+         * @constant
+         * @type {bool}
+         */
+        SETTINGS.LOG_CONSOLE = !SETTINGS.IS_PRODUCTION;
+
+        /**
+         * Appended to query string for versioning of network resources (CSS, JavaScript, etc)
+         * This version number should be updated in production for every release.
+         *
+         * @constant
+         * @type {string}
+         */
+        SETTINGS.APP_VERSION = '1.0.0';
+
+        /**
+         * Appended to query string to defeat caching of network resources (CSS, JavaScript, etc)
+         * Should be set to '' on production
+         *
+         * @constant
+         * @type {string}
+         */
+        SETTINGS.CACHE_BUSTER = false; // SETTINGS.IS_PRODUCTION ? '' : Math.random();
+
+        /**
+         * Root path for all JavaScript files
+         *
+         * @constant
+         * @type {string}
+         */
+        SETTINGS.SCRIPT_PATH = 'scripts/';
+
+        /**
+         * Set any RequireJs configuration that is dependent on dynamic configuration variables.
+         * Note that this config data is merged into any other require.config() statements defined elsewhere.
+         */
+        require.config(
+                {
+                    baseUrl: SETTINGS.SCRIPT_PATH,
+
+                    // Params to append to the end of each js file request
+                    urlArgs: 'v=' + SETTINGS.APP_VERSION + (SETTINGS.CACHE_BUSTER != '' ? '&bust=' + SETTINGS.CACHE_BUSTER : ''),
+
+                    // Timeout to load each js file, in seconds
+                    waitSeconds: 120
+                }
+        );
+
+        /**
+         * Set route and kick off RequireJs, which begins loading of scripts starting from main.js
+         */
+        var route = ['app.config'];
+        require(route);
+    </script>
+</body>
+</html>
